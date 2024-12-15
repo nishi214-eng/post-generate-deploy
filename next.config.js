@@ -25,6 +25,9 @@ const nextConfig = {
       },
     ];
   },
+  experimental: {
+    appDir: true,  // appディレクトリを有効にするオプション
+  },
 };
 
 module.exports = nextConfig;

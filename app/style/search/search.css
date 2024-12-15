@@ -1,0 +1,50 @@
+#search-form {
+    margin-bottom: 10%;
+}
+.section-title h2{
+    margin-bottom: 0;
+}
+.section-explanation p{
+    margin: 0;
+}
+.section-explanation {
+    margin-bottom: 4%;
+}
+.textField{
+    margin-bottom: 2%;
+}
+
+.radio {
+    display: none;
+}
+
+#search-result ul {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;  /* アイテムが幅を超えた場合に折り返す */
+    justify-content: space-between; /* アイテムの間隔を均等にする */
+    margin-bottom: 2%;
+}
+
+#search-result li {
+    list-style: none;
+    width: calc(50% - 10px); /* 2列にするが、間隔を考慮 */
+    margin: 5px; /* マージンを調整 */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 軽い影を追加 */
+    border-radius: 8px; /* 角を丸くする */
+    overflow: hidden; /* 内容がはみ出さないようにする */
+    background-color: #fff; /* 背景色を追加 */
+    transition: transform 0.2s; /* ホバー時のアニメーション */
+}
+
+#search-result li:hover {
+    transform: scale(1.02); /* ホバー時に少し大きくなる */
+}
+
+/* メディアクエリ: 幅が768px以下のとき */
+@media (max-width: 768px) {
+    #search-result li {
+        width: calc(100% - 10px); /* 幅を100%にして1列表示に */
+    }
+}
