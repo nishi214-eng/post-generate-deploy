@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 
-export const useEmbedding = async(text:string) => {
+export const createEmbedding = async(text:string) => {
     // openAIへの参照を作成
     const openai = new OpenAI({ 
         apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,

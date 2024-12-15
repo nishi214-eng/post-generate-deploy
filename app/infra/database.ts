@@ -2,8 +2,8 @@ import { db } from "./firebase"
 import { doc,Timestamp } from "firebase/firestore";
 import { setDoc } from "firebase/firestore";
 import { fileUploadToStorage } from "../features/fileUploadToStorage";
+import { generateText } from "../features/generateText";
 import { createEmbedding } from "@/features/createEmbedding";
-import { generateText } from "@/features/generateText";
 import { getLlmLingua } from "@/features/llmLingua";
 
 export const uploadItemDateToFirestore = async (
