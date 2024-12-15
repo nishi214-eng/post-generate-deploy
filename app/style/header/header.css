@@ -1,0 +1,34 @@
+/* ヘッダーの全体的なスタイル */
+.header {
+    background-color: #1976d2;
+    padding: 10px 0; /* 上下にパディング */
+    text-align: right; /* テキストを中央揃え */
+  }
+  
+  /* ナビゲーションのリンクリスト */
+  .link-list {
+    list-style: none; /* リストのドットを削除 */
+    padding: 0;
+    margin: 0;
+    margin-right: 10px;
+    display: flex; /* フレックスボックスで横並びに */
+    justify-content: right; /* 水平方向に中央揃え */
+    gap: 0px; /* 各リンクの間に間隔を空ける */
+  }
+  
+  /* 各リンクのスタイル */
+  .nav-link {
+    text-decoration: none; /* 下線を削除 */
+    color: #fff; /* 白いテキスト */
+    font-size: 14px; /* テキストサイズ */
+    padding: 10px 10px; /* リンクに余白を追加 */
+    border-radius: 5px; /* 少し丸みをつける */
+    transition: background-color 0.3s ease, color 0.3s ease; /* ホバー時のトランジション */
+  }
+  
+  /* リンクのホバー時のスタイル */
+  .nav-link:hover {
+    color: #f0f0f0; /* テキストを薄い灰色に */
+    opacity: 0.3;
+  }
+  
