@@ -1,6 +1,5 @@
 "use client";
 
-import { createEmbedding } from "@/features/createEmbedding";
 import { TextField, Button, CardMedia, SelectChangeEvent } from "@mui/material";
 import { useState } from "react";
 import { savedItemData } from "@/types/itemData";
@@ -17,6 +16,7 @@ import "../style/search/search.css"
 import { AlertContext } from "@/features/useSnackber";
 import ModalComponent from "./modal";
 import { ChangeSelect } from "./changePrompt";
+import { createEmbedding } from "@/features/createEmbedding";
 
 export const SearchFromTrend = () => {
     const { showAlert } = useContext(AlertContext);
