@@ -1,6 +1,14 @@
 import { NextResponse } from 'next/server';
 import googleTrends from 'google-trends-api';
 
+// Google Trends APIの検索結果の形式に基づいて型定義
+interface TrendSearch {
+    title: {
+        query: string;
+    };
+    formattedTraffic: string | null;
+}
+
 export async function GET() {
     try {
         // 本日の日付を取得
@@ -19,10 +27,11 @@ export async function GET() {
 
         // 上位25件の検索語を取得
         const trendingSearches = parsedResults.default.trendingSearchesDays[0].trendingSearches;
+
         // 上位25件の検索語を返す
-        const trendingSearchesData = trendingSearches.map((search, index) => ({
+        const trendingSearchesData = trendingSearches.map((search: TrendSearch, index: number) => ({
             rank: index + 1,   // ランク付け（1〜25）
-            query: search.title.query, // 検索語が空の場合は '不明' を表示
+            query: search.title.query || '不明', // 検索語が空の場合は '不明' を表示
             traffic: search.formattedTraffic || '不明',  // 検索量が空の場合は '不明' を表示
         }));
 
