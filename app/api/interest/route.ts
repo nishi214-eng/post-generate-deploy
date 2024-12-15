@@ -104,7 +104,7 @@ export async function GET(req: Request) {
 
         // エラー時のレスポンス
         return NextResponse.json(
-            { error: 'Failed to fetch trends data', details: error.message },
+            { error: 'Failed to fetch trends data' },
             { status: 500 }
         );
     }
