@@ -179,10 +179,6 @@ export const SearchTrend: React.FC<SearchTrendProps> = ({onTopicSelect }) => {
                                         onMouseEnter={(e) =>
                                             (e.currentTarget.style.backgroundColor = "#f0f8ff")
                                         }
-                                        onMouseLeave={(e) =>
-                                            (e.currentTarget.style.backgroundColor =
-                                                selectedTopic === trend ? "#add8e6" : "transparent")
-                                        }
                                     >
                                         <td>{trend.keyword}</td>
                                     </tr>
