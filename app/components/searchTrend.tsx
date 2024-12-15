@@ -16,6 +16,7 @@ export const SearchTrend: React.FC<SearchTrendProps> = ({onTopicSelect }) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [trends, setTrends] = useState<Trend[]>([]);  
+    const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
 
     const fetchTrend = async () => {
         try {
@@ -119,8 +120,6 @@ export const SearchTrend: React.FC<SearchTrendProps> = ({onTopicSelect }) => {
     if (error) {
         return <div>{error}</div>;
     }
-    const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
-
     const handleSelectTopic = (topic: string) => {
         setSelectedTopic(topic);
         onTopicSelect(topic); // 親コンポーネントに選択されたトピックを渡す

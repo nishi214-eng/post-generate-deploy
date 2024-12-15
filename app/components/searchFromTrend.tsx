@@ -1,6 +1,6 @@
 "use client";
 
-import { useEmbedding } from "@/features/useEmbedding";
+import { createEmbedding } from "@/features/createEmbedding";
 import { TextField, Button, CardMedia, SelectChangeEvent } from "@mui/material";
 import { useState } from "react";
 import { savedItemData } from "@/types/itemData";
@@ -28,7 +28,7 @@ export const SearchFromTrend = () => {
     const handleSubmit = async () => {
         setLoading(true); // ローディング開始
         // 検索クエリをベクトル化
-        const vectorTrend = await useEmbedding(trend);
+        const vectorTrend = await createEmbedding(trend);
         // firestoreのベクトルデータを全件呼び出して配列に格納
         const itemData: savedItemData[] = [];
         const vectorList: number[][] = [];
@@ -272,9 +272,8 @@ export const SearchFromTrend = () => {
                         </div>
                         <ul> {/* 複数行に折り返し可能に */}
                         {results && results.map((result: number, index) => (
-                               <li> {/* 幅を指定し、余白を追加 */}
-                           
-                                    <div key={index}>
+                               <li key={index}> {/* liタグにkeyを追加 */}
+                                    <div>
                                         <label>
                                             <input
                                                 type="radio"
