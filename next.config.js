@@ -24,10 +24,7 @@ const nextConfig = {
             : "/api/py/openapi.json",
       },
     ];
-  },
-  experimental: {
-    appDir: true,  // appディレクトリを有効にするオプション
-  },
+  }
 };
 
 module.exports = nextConfig;
