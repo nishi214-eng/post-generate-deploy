@@ -30,7 +30,7 @@ export const uploadItemDateToFirestore = async (
     let formattedDate = arrangeDate.getFullYear()+ "y" + (arrangeDate.getMonth()+1) + "m" + arrangeDate.getDate() + "d" + arrangeDate.getHours() + "h" + arrangeDate.getMinutes() + "m" + arrangeDate.getSeconds() + "s";
     let documentName = itemName + "_" + formattedDate;
     let fileName = itemName + "_" + formattedDate;
-    const itemDataRef = doc(db, "item",documentName);
+    const itemDataRef = doc(db, "items",documentName);
     if(file){
         try{
             // 日本語の解説文をgpt4で英文に変換
@@ -50,8 +50,8 @@ export const uploadItemDateToFirestore = async (
                     author,
                     explanation,
                     enExplanation,
-                    storagePath,
                     compressedPrompt,
+                    storagePath,
                     vectorEmbedding,
                     date
                 });
@@ -68,20 +68,17 @@ export const uploadItemDateToFirestore = async (
             let userPrompt =`入力として与える解説文を英語に翻訳してください\n## 出力形式\n英語分のみを出力してください。\n##入力\n${explanation}`
             const enExplanation = await generateText(systemPrompt, userPrompt)||"";
             // 英語の解説文をllmLinguaで圧縮
-            const compressedPrompt = await getLlmLingua(enExplanation);
+            // const compressedPrompt = await getLlmLingua(enExplanation);
             // 解説文を意味ベクトルに変換
-            const vectorEmbedding = await createEmbedding(compressedPrompt);            
+            const vectorEmbedding = await createEmbedding(enExplanation);            
             await setDoc(itemDataRef, {
                 itemName,
                 era,
                 author,
                 explanation,
                 enExplanation,
-                compressedPrompt,
                 vectorEmbedding,
-                date
-
-                
+                date                
             });
         }catch(error){
             throw new Error('firestoreへのデータ送信に失敗');
