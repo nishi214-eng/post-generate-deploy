@@ -1,7 +1,7 @@
 export const getTrendKeywords = async (keywords: string[]) => {
     try {
         // FastAPIにPOSTリクエストを送信
-        const response = await fetch("http://127.0.0.1:8000/fetch_trends", {  // !で環境変数が確実に存在することを宣言
+        const response = await fetch(process.env.NEXT_PUBLIC_FASTAPI_URL + "fetch_trends"!, {  // !で環境変数が確実に存在することを宣言
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
