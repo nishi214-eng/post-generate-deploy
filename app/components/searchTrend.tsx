@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { generateText } from '@/features/generateText';
 import { Button } from '@mui/material';
+import { getTrendKeywords } from '@/features/getAiTrend';
 interface Trend {
     keyword: string; // 対象のキーワード
     isThresholdExceeded: boolean; // 閾値を超えたかどうか
@@ -15,7 +16,7 @@ export const SearchTrend: React.FC<SearchTrendProps> = ({onTopicSelect }) => {
     const [trendingSearches, setTrendingSearches] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [trends, setTrends] = useState<Trend[]>([]);  
+    const [trends, setTrends] = useState<string[]>([]);  
     const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
 
     const fetchTrend = async () => {
@@ -59,7 +60,7 @@ export const SearchTrend: React.FC<SearchTrendProps> = ({onTopicSelect }) => {
             systemPrompt = `あなたは博識で、花鳥風月に関する事柄を羅列することが得意です。`;
 
             userPrompt = 
-                `${today}の花鳥風月に関するワードを5個挙げてください。\n
+                `${today}の花鳥風月に関するワードを10個挙げてください。\n
                 ##目的\n
                 ${today}の花鳥風月に関するワードをリスト化し、ツイートに投稿することを目的としています。\n
                 ##出力形式\n
@@ -91,26 +92,17 @@ export const SearchTrend: React.FC<SearchTrendProps> = ({onTopicSelect }) => {
                 const topicsArray = [...topicsArray1, ...topicsArray2];
                 
                 // 配列をカンマ区切りの文字列に変換
-                const query = topicsArray.join(',');
-                console.log('Generated query:', query);
-                // クエリを利用してさらにAPIリクエストを送信する場合
-                const url = `/api/interest?keywords=${encodeURIComponent(query)}`;
-                const response = await fetch(url);
+                const response = await getTrendKeywords(topicsArray);  // ここで getTrendKeywords を呼び出します
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-            
-                // 成功した場合、trendsデータを状態に設定
-                if (response.ok) {
-                    setTrends(data.trends);
+                // responseがnullまたはundefinedでないことを確認
+                if (response && response.length > 0) {
+                    // トレンドデータが存在する場合、trendsデータを状態に設定
+                    setTrends(response);  // getTrendKeywordsから返されたトレンドキーワードを設定
                 } else {
-                    setError(data.error || 'Unknown error');
+                    // エラーや空の結果の場合
+                    setError('No trending keywords found or an error occurred.');
                 }
-
-                console.log('API Response:', data);
+                console.log('API Response:', trends);
             }
         } catch (error) {
             console.error('Error during fetchTrendingSearches:', error);
@@ -168,19 +160,23 @@ export const SearchTrend: React.FC<SearchTrendProps> = ({onTopicSelect }) => {
                     <table>
                         <tbody>
                             {trends
-                                .filter((trend) => trend.isThresholdExceeded)
                                 .map((trend, index) => (
                                     <tr
                                         key={index}
-                                        onClick={() => handleSelectTopic(trend.keyword)}
+                                        onClick={() => handleSelectTopic(trend)}
                                         style={{
                                             cursor: "pointer",
                                         }}
                                         onMouseEnter={(e) =>
                                             (e.currentTarget.style.backgroundColor = "#f0f8ff")
                                         }
+                                        onMouseLeave={(e) => {
+                                            {
+                                                e.currentTarget.style.backgroundColor = "transparent";
+                                            }
+                                        }}                           
                                     >
-                                        <td>{trend.keyword}</td>
+                                        <td>{trend}</td>
                                     </tr>
                                 ))}
                         </tbody>
