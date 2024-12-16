@@ -17,7 +17,7 @@ export const ItemList = () => {
         setLoading(true);
         try {
             const q = query(
-                collection(db, 'item'),
+                collection(db, 'items'),
                 orderBy('date'), // 追加された日時順でソート
                 limit(8)
             ); // 最初の8件を取得
@@ -46,7 +46,7 @@ export const ItemList = () => {
         setLoadingNext(true);
         try {
             const q = query(
-                collection(db, 'item'),
+                collection(db, 'items'),
                 orderBy('date'), // 追加された日時順でソート
                 startAfter(lastVisible), // 最後のドキュメントから始める
                 limit(8)
