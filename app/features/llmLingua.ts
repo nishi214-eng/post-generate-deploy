@@ -1,7 +1,7 @@
 export const getLlmLingua = async(prompt:string) =>{
     try {
         // fastAPIにpostリクエストを送信
-        const response = await fetch(process.env.NEXT_PUBLIC_FASTAPI_URL!, { // !で環境変数が確実に存在することを宣言
+        const response = await fetch(process.env.NEXT_PUBLIC_FASTAPI_URL+"compress"!, { // !で環境変数が確実に存在することを宣言
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -26,7 +26,7 @@ export const ManualInputItemForm = () => {
         let trimAuthor = trimWord(author);
         let trimExplanation = trimWord(explanation);
         // 各変数のうちいずれかが空白なら処理を中断
-        if (!trimItemName || !trimEra || !trimAuthor || !trimExplanation){
+        if (!trimItemName || !trimExplanation){
             throw new Error("空白の要素があります");
         }
         // 送信処理
