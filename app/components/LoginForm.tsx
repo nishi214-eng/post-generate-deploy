@@ -16,6 +16,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useRouter } from "next/navigation";
 
 import "../style/login/login.css";
+import Modal from "./modal";
 
 interface LoginForm {
   email: string
@@ -58,6 +59,7 @@ export const LogInForm = () => {
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
       event.preventDefault();
     };
+    const [isOpenModal, setIsOpenModal] = useState(false);
   
     return (
       <div className="form_container">
@@ -171,7 +173,6 @@ export const LogInForm = () => {
                 </Button>
               </div>
             </form>
-            
           </div>
         </section>
       </div>
