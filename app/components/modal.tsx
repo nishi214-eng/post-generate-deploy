@@ -105,7 +105,7 @@ export default function Modal({ isOpenModal, setIsOpenModal, content, onConfirm 
                                     setTimeout(() => {
                                         setIsOpenModal(false); // モーダルを閉じる
                                         setLoading(false); // ローディング終了
-                                    }, 4000); // 4秒遅延
+                                    }, 7000); // 7秒遅延
                                 }}
                                 variant="contained"
                                 disabled={loading} // ローディング中は無効化
