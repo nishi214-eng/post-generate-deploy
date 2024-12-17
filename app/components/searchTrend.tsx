@@ -14,13 +14,15 @@ interface SearchTrendProps {
 
 export const SearchTrend: React.FC<SearchTrendProps> = ({onTopicSelect }) => {
     const [trendingSearches, setTrendingSearches] = useState<any[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [ailoading, setAiloading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [trends, setTrends] = useState<string[]>([]);  
     const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
 
     const fetchTrend = async () => {
         try {
+            setLoading(true);
             const url = `/api/trend`;
             const response = await fetch(url);
             const data = await response.json();
@@ -29,6 +31,7 @@ export const SearchTrend: React.FC<SearchTrendProps> = ({onTopicSelect }) => {
                 setError(data.error);
             } else {
                 setTrendingSearches(data.trendingSearches);  // データをセット
+                setLoading(false);
             }
         }catch(e){
             console.log(e);
@@ -36,6 +39,7 @@ export const SearchTrend: React.FC<SearchTrendProps> = ({onTopicSelect }) => {
     }
     const fetchTrendingSearches = async () => {
         try {
+            setAiloading(true);
             const today = new Date().toISOString().split('T')[0]; // 日付フォーマットを簡潔化
             let systemPrompt = `あなたは博識で、与えられた情報を元に関連する祝日やイベント、出来事を羅列することが得意です。`;
 
@@ -98,11 +102,11 @@ export const SearchTrend: React.FC<SearchTrendProps> = ({onTopicSelect }) => {
                 if (response && response.length > 0) {
                     // トレンドデータが存在する場合、trendsデータを状態に設定
                     setTrends(response);  // getTrendKeywordsから返されたトレンドキーワードを設定
+                    setAiloading(false);
                 } else {
                     // エラーや空の結果の場合
                     setError('No trending keywords found or an error occurred.');
                 }
-                console.log('API Response:', trends);
             }
         } catch (error) {
             console.error('Error during fetchTrendingSearches:', error);
@@ -121,11 +125,15 @@ export const SearchTrend: React.FC<SearchTrendProps> = ({onTopicSelect }) => {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {/* 急上昇中のトレンド */}
-            <Button onClick={fetchTrend} sx={{marginTop:"20px"}}>
-                急上昇中のトピック
+            <Button 
+                disabled={loading}
+                onClick={fetchTrend} 
+                sx={{marginTop:"20px"}}
+            >
+                {loading ? "検索中" : "急上昇中のトピック"}
             </Button>
             {trendingSearches.length > 0 && (
-                <div>
+                <div style={{ padding:"5px",paddingTop:"0" }}>
                     <table>
                         <tbody>
                             {trendingSearches.map((search) => (
@@ -152,11 +160,11 @@ export const SearchTrend: React.FC<SearchTrendProps> = ({onTopicSelect }) => {
             )}
 
             {/* AIが算出したトピック */}
-            <Button onClick={fetchTrendingSearches}>
-                AIが算出したトピック
+            <Button onClick={fetchTrendingSearches} disabled={ailoading}>
+                {ailoading ? "検索中" : "AIが算出したトピック"}
             </Button>
             {trends && trends.length > 0 && (
-                <div>
+                <div style={{ padding:"5px",paddingTop:"0" }}>
                     <table>
                         <tbody>
                             {trends

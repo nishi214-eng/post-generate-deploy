@@ -24,8 +24,8 @@ export const searchFromEmbedding = async (queryvector: number[], vectorDataSet: 
     // 類似度でソート（高い順）
     similarities.sort((a, b) => b.similarity - a.similarity);
 
-    // 上位5つのラベルを取得（インデックスで示される）
-    const resultsVal = similarities.slice(0, 5).map(item => item.index);
+    // 上位10のラベルを取得（インデックスで示される）
+    const resultsVal = similarities.slice(0, 10).map(item => item.index);
 
     return resultsVal;
 };

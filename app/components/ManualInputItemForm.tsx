@@ -50,7 +50,7 @@ export const ManualInputItemForm = () => {
         >
             <TextField 
                 id="itemName" 
-                label="収蔵品の名前" 
+                label="収蔵品の名前(必須)" 
                 variant="outlined" 
                 fullWidth // 横幅100%
                 onChange={(event) => setItemName(event.target.value)}
@@ -71,7 +71,7 @@ export const ManualInputItemForm = () => {
             />
             <TextField 
                 id="explanation" 
-                label="解説文" 
+                label="解説文（必須)" 
                 variant="outlined" 
                 fullWidth // 横幅100%
                 multiline

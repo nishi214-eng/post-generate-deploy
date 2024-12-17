@@ -81,3 +81,11 @@
   .text_field p{
     margin-left: 2px;
   }
+
+  @media (max-width: 767px){
+    .form_wrapper {
+      width: 70%;
+      margin-left: 15%;
+    }
+   }
+   

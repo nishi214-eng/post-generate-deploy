@@ -5,6 +5,8 @@ import { Tabs, Tab, Box, Typography } from "@mui/material";
 import { ManualInputItemForm } from "@/components/ManualInputItemForm";
 import { AutoInputItemForm } from "@/components/AutoInputItemForm";
 import { Header } from "@/components/header";
+import { useAuthContext } from "@/stores/authContext";
+import { useRouter } from "next/navigation";
 
 function CustomTabPanel(props: { children?: React.ReactNode; value: number; index: number }) {
     const { children, value, index, ...other } = props;
@@ -28,6 +30,17 @@ export default function Page() {
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
+    const { user } = useAuthContext(); // 追加: 認証状態を取得
+    const router = useRouter();
+
+    if (user === undefined) {
+        return <></>; // ユーザー情報を取得中
+    }
+
+    if (user === null) {
+        router.push('/'); 
+        return <></>; // ログインしていない場合
+    }
 
     return (
         <div>
