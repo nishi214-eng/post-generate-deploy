@@ -243,7 +243,8 @@ export const SearchFromTrend = () => {
                     id="search-input"
                     label="トレンドトピック"
                     sx={{
-                        width:"100%"
+                        width:"100%",
+                        marginBottom:"10px"
                     }}
                 />
                 
@@ -257,7 +258,7 @@ export const SearchFromTrend = () => {
                         borderRadius: "50px",
                     }}
                 >
-                    {loading ? "処理中..." : "収蔵品を検索"}
+                    {loading ? "検索中" : "収蔵品を検索"}
                 </Button>
                 <section id="search-result">
                 {results.length > 0 && (
@@ -267,7 +268,7 @@ export const SearchFromTrend = () => {
                                 <h2>検索結果</h2>
                             </div>
                             <div className="section-explanation">
-                                <p>{trend}に関連性が高い収蔵品上位5件です。1つを選択し、ポストを生成してください</p>
+                                <p>{trend}に関連性が高い収蔵品10件です。1つを選択し、ポストを生成してください</p>
                             </div>
                         </div>
                         <ul> {/* 複数行に折り返し可能に */}
@@ -343,9 +344,10 @@ export const SearchFromTrend = () => {
                             sx={{
                                 width:"100%",
                                 borderRadius: "50px",
+                                marginBottom:"15vh"
                             }}
                         >
-                            {loading ? "処理中..." : "ポストを生成する"}
+                            {loading ? "生成中" : "ポストを生成する"}
                         </Button>
                     </div>
                 )}

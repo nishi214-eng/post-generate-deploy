@@ -159,6 +159,7 @@ export const LogInForm = () => {
               <div className="button_field">
                 <Button
                   variant="contained"
+                  disabled={loading}
                   type="submit"
                   sx={{
                     width: "100%",
@@ -166,7 +167,7 @@ export const LogInForm = () => {
                     boxShadow: "none",
                   }}
                 >
-                  {loading ? "処理中..." : "ログイン"}
+                  {loading ? "ログイン中" : "ログイン"}
                 </Button>
               </div>
             </form>
