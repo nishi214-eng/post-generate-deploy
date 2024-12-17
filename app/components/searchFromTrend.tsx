@@ -17,6 +17,7 @@ import { AlertContext } from "@/features/useSnackber";
 import ModalComponent from "./modal";
 import { ChangeSelect } from "./changePrompt";
 import { createEmbedding } from "@/features/createEmbedding";
+import Modal from "./modal";
 
 export const SearchFromTrend = () => {
     const { showAlert } = useContext(AlertContext);
@@ -24,6 +25,8 @@ export const SearchFromTrend = () => {
     const [itemState, setItemState] = useState<savedItemData[]>([]); // firestoreから呼び出したアイテムデータを管理するステート
     const [results, setResults] = useState<number[]>([]); // 結果を保存するためのステート
     const [loading, setLoading] = useState<boolean>(false); // ローディング状態を管理
+    const [isOpenModal, setIsOpenModal] = useState(false);
+    const [content, setContent] = useState<string>("");
 
     const handleSubmit = async () => {
         setLoading(true); // ローディング開始
@@ -127,27 +130,27 @@ export const SearchFromTrend = () => {
     const handleSelectItem = async() => {
         setLoading(true); // ローディング開始
         if (selectedItem !== null) {
-            let systemPrompt = `博識な博物館学芸員です。また、後述するのは収蔵品の${itemState[selectedItem].itemName}についての解説です。${itemState[selectedItem].explanation}`;
+            let systemPrompt = `博識な博物館学芸員です。また、後述するのは和歌山市立博物館が所有する収蔵品の、${itemState[selectedItem].itemName}についての解説です。${itemState[selectedItem].explanation}`;
             let userPrompt =
-            `ある「トピック」と、「博物館の収蔵品」に関連性があるかどうかを判定してください。\n
+            `ある「トピック」と、「博物館の収蔵品」に関連性があるかどうかを、「低、中、高」判定し、その理由を示してください。\n
             ##入力##\n
             収蔵品：${itemState[selectedItem].itemName}\n
             トピック：${trend}
-            ##出力形式##\n
-            関連性がある→"ある"のみを出力してください\n
-            関連性がない→"ない"のみを出力してください\n
-            ##関連性がない例##\n
+            ##出力の例##\n
+            関連性：低(ここでhtmlの改行タグ)\n
+            ${itemState[selectedItem].itemName}と${trend}は、~という理由で関連性が低いです。
+            ##関連性の例##\n
             関連性がない→トピックが「月」で、収蔵品が「蟻の絵」といったように、二者を連想することができないもの\n
             関連性がある→トピックが「コブラ」で、収蔵品が「蛇の絵」といったように二者を連想できるもの。
             `
-            // 3回生成してresult配列に格納
             let gereratedText = await generateText(systemPrompt, userPrompt);
-            if(gereratedText === "ない"){
-                showAlert(`${itemState[selectedItem].itemName}と${trend}に関連性はありませんでした。`, "error");
-                setLoading(false); 
-            }else if(gereratedText === "ある"){
-                selectItem(itemState[selectedItem]);
+            if(gereratedText){
+                setContent(gereratedText)
+                setIsOpenModal(true);
             }
+            setLoading(false);
+        }else{
+            showAlert(`収蔵品を選択してください`, "error");
             setLoading(false);
         }
     };
@@ -215,6 +218,12 @@ export const SearchFromTrend = () => {
         // クライアントサイドでのみ実行されるようにする
         setIsClient(true);
     }, []);
+    const handleConfirm = () => {
+        if(selectedItem){
+            selectItem(itemState[selectedItem])
+        }
+    };
+
 
     // クライアントサイドでのみSelectをレンダリング
     if (!isClient) return null;
@@ -347,11 +356,15 @@ export const SearchFromTrend = () => {
                                 marginBottom:"15vh"
                             }}
                         >
-                            {loading ? "生成中" : "ポストを生成する"}
+                            {loading ? "処理中" : "次へ"}
                         </Button>
                     </div>
                 )}
-            </section>
+                </section>
+
+                <div>
+                  <Modal isOpenModal={isOpenModal} setIsOpenModal={setIsOpenModal} content={content} onConfirm={handleConfirm}/>
+                </div>
             </section>
             {/*
             <div>
