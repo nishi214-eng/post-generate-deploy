@@ -14,7 +14,6 @@ import Typography from '@mui/material/Typography';
 import { useEffect,useContext } from "react";
 import "../style/search/search.css"
 import { AlertContext } from "@/features/useSnackber";
-import ModalComponent from "./modal";
 import { ChangeSelect } from "./changePrompt";
 import { createEmbedding } from "@/features/createEmbedding";
 import Modal from "./modal";
@@ -95,7 +94,7 @@ export const SearchFromTrend = () => {
         宣伝する収蔵品：${selectItem.itemName}`
         let textResult: string[] = [];
         // 3回生成してresult配列に格納
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 4; i++) {
             let gereratedText = await generateText(systemPrompt, userPrompt);
             if (gereratedText) {
                 textResult.push(gereratedText);
@@ -171,13 +170,11 @@ export const SearchFromTrend = () => {
     // トーン変更時のハンドラ
     const handleToneChange = (event: SelectChangeEvent) => {
         setTone(event.target.value); // トーンの値を更新
-        console.log("Selected Tone:", event.target.value); // 選択されたトーンを表示
     };
 
     // 技法変更時のハンドラ
     const handleTechniqueChange = (event: SelectChangeEvent) => {
         setTechnique(event.target.value); // 技法の値を更新
-        console.log("Selected Technique:", event.target.value); // 選択された技法を表示
     };
 
     // トーンの選択肢
@@ -329,7 +326,7 @@ export const SearchFromTrend = () => {
                         ))}
                         </ul>
                         <div>
-                            <h2>トーンと技法の選択</h2>
+                            <h2>口調と表現技法の選択</h2>
                             {/* ChangeSelectコンポーネントを呼び出す */}
                             <ChangeSelect
                                 title="口調" // ラベルのタイトル
