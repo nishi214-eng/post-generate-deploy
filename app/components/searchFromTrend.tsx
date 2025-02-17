@@ -29,51 +29,72 @@ export const SearchFromTrend = () => {
 
     const handleSubmit = async () => {
         setLoading(true); // ローディング開始
-        // 検索クエリをベクトル化
-        const vectorTrend = await createEmbedding(trend);
-        // firestoreのベクトルデータを全件呼び出して配列に格納
-        const itemData: savedItemData[] = [];
-        const vectorList: number[][] = [];
-        const q = query(collection(db, "items"), orderBy("date")); // itemコレクションへの参照を作成（日付順)
-        const querySnapshot = await getDocs(q); // ドキュメントデータを全件取得
-        querySnapshot.forEach((doc) => {
-            itemData.push(doc.data() as savedItemData);
-        });
-        setItemState(itemData);
-        itemData.forEach((item) => {
-            vectorList.push(item.vectorEmbedding as [])
-        });
+    
         try {
-            // POSTリクエストを送信
+            // 検索クエリをベクトル化
+            const vectorTrend = await createEmbedding(trend);
+    
+            // Firestore の収蔵品データを全件取得
+            const itemData: savedItemData[] = [];
+            const vectorList: number[][] = [];
+    
+            const q = query(collection(db, "items"), orderBy("date"));
+            const querySnapshot = await getDocs(q);
+    
+            querySnapshot.forEach((doc) => {
+                itemData.push(doc.data() as savedItemData);
+            });
+    
+            setItemState(itemData); // Firestore から取得した全データをステートに保存
+    
+            itemData.forEach((item) => {
+                vectorList.push(item.vectorEmbedding as number[]);
+            });
+    
+            // **完全一致検索**
+            const exactMatchIndexes: number[] = itemData
+                .map((item, index) => (item.itemName.includes(trend) ? index : -1)) // `includes()` で部分一致判定
+                .filter(index => index !== -1); // `-1` のデータを除外（完全一致しないものは除外）
+    
+            // **ベクトル検索**
             const response = await fetch("/api/faiss", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ queryvector: vectorTrend, vectorDataSet: vectorList }), // ベクトルをリクエストボディに含める
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ queryvector: vectorTrend, vectorDataSet: vectorList }),
             });
-
+    
             if (!response.ok) {
-                const errorText = await response.text(); // エラーレスポンスのテキストを取得
+                const errorText = await response.text();
                 throw new Error(`Network response was not ok: ${response.status}, ${errorText}`);
             }
+    
+            const vectorSearchResults: number[] = await response.json(); // ベクトル検索結果のインデックス
+    
+            // **完全一致とベクトル検索の結果を統合（重複を防ぐ）**
+            let mergedResults = Array.from(new Set([...exactMatchIndexes, ...vectorSearchResults]));
 
-            const data = await response.json(); // レスポンスを JSON として解析
-            setResults(data); // 結果をステートに保存
-
-            // 検索結果のセクションまでスクロールする
-            const element = document.getElementById('search-result');
-            if(element){
-                element.scrollIntoView({  
-                    behavior: 'smooth'  
-                });
+            // 要素数が 11 の場合、後ろの要素を削除して 10 にする
+            if (mergedResults.length > 10) {
+                mergedResults = mergedResults.slice(0, 10); // 先頭の 10 件だけを取得
             }
+    
+            // **検索結果をステートに保存**
+            setResults(mergedResults);
+    
+            // 検索結果のセクションまでスクロール
+            const element = document.getElementById('search-result');
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+    
         } catch (error) {
             console.error("Error fetching data:", error);
+            showAlert(`検索に失敗しました`, "error");
         } finally {
             setLoading(false); // ローディング終了
         }
     };
+    
 
     // 検索したアイテムを選択→アイテムのデータを渡してページ遷移する関数
     const selectItem = async (selectItem: savedItemData) => {

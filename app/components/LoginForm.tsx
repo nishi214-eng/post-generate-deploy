@@ -48,6 +48,7 @@ export const LogInForm = () => {
       } catch {
         // エラー処理
         showAlert("メールアドレスまたはパスワードが異なります。", "error");
+        setLoading(false);
       }
     };
   
