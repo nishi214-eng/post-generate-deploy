@@ -34,7 +34,7 @@ export const SearchFromTrend = () => {
         // firestoreのベクトルデータを全件呼び出して配列に格納
         const itemData: savedItemData[] = [];
         const vectorList: number[][] = [];
-        const q = query(collection(db, "item"), orderBy("date")); // itemコレクションへの参照を作成（日付順)
+        const q = query(collection(db, "items"), orderBy("date")); // itemコレクションへの参照を作成（日付順)
         const querySnapshot = await getDocs(q); // ドキュメントデータを全件取得
         querySnapshot.forEach((doc) => {
             itemData.push(doc.data() as savedItemData);
