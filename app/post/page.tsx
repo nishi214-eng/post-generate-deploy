@@ -8,10 +8,11 @@ import { useRouter } from "next/navigation";
 
 function PageContent() {
   const searchParams = useSearchParams();
-  const jpTexts: string[] = searchParams.getAll('jpTexts');
-  const enTexts: string[] = searchParams.getAll('enTexts');
+  const jpTexts: string[] = searchParams.getAll("jpTexts");
+  const enTexts: string[] = searchParams.getAll("enTexts");
+  const imageUrls: string[] = searchParams.getAll("imageUrls"); // 画像URLも取得
 
-  return <PostToTweet jpTexts={jpTexts} enTexts={enTexts} />;
+  return <PostToTweet jpTexts={jpTexts} enTexts={enTexts} imageUrls={imageUrls} />;
 }
 
 export default function Page() {

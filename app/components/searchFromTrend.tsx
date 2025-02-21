@@ -138,7 +138,11 @@ export const SearchFromTrend = () => {
                 enTexts.push(gereratedText);
             }
         }
-        postTest(textResult,enTexts);
+
+        let imageDataUrl:string[] = [];
+        imageDataUrl[0] = selectItem.storagePath;
+        postTest(textResult, enTexts, imageDataUrl);
+
         setLoading(false); // ローディング終了
 
     }
@@ -177,13 +181,15 @@ export const SearchFromTrend = () => {
 
     // 生成した文書を渡してページ遷移
     const router = useRouter();
-    const postTest = (jpTexts: string[],enTexts: string[],) => {
+    const postTest = (jpTexts: string[], enTexts: string[], imageUrls: string[]) => {
         const queryParams = new URLSearchParams();
-        // urlに追加
+        // URLに追加
         jpTexts.forEach((value) => queryParams.append('jpTexts', value));
         enTexts.forEach((value) => queryParams.append('enTexts', value));
+        imageUrls.forEach((value) => queryParams.append('imageUrls', value));
+    
         router.push(`/post?${queryParams.toString()}`);
-    }
+    };
     
     const [tone, setTone] = React.useState(''); // トーンの状態管理
     const [technique, setTechnique] = React.useState(''); // 技法の状態管理
