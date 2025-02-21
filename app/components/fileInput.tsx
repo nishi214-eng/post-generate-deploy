@@ -1,6 +1,7 @@
 "use client";
 
 import styled from "@emotion/styled";
+import { useState } from "react";
 import { Button } from "@mui/material";
 import { CloudUpload } from "@mui/icons-material";
 
@@ -22,26 +23,37 @@ export const FileInput: React.FC<{
     fileFormat: string,
     str: string  // strをstring型として指定
 }> = ({ setFile, fileFormat, str }) => {
+    const [preview, setPreview] = useState<string | null>(null);
+
     return (
-        <Button
-            component="label"
-            role={undefined}
-            variant="contained"
-            tabIndex={-1}
-            startIcon={<CloudUpload />}
-        >
-            {str}  {/* strはボタンに表示されるテキスト */}
-            <VisuallyHiddenInput
-                type="file"
-                accept={fileFormat}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                    const files = event.currentTarget.files;
-                    if (!files || files?.length === 0) return;
-                    const file = files[0];
-                    setFile(file);
-                }}
-                multiple
-            />
-        </Button>
+        <div>
+            <Button
+                component="label"
+                role={undefined}
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<CloudUpload />}
+                fullWidth
+            >
+                {str} {/* strはボタンに表示されるテキスト */}
+                <VisuallyHiddenInput
+                    type="file"
+                    accept={fileFormat}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                        const files = event.currentTarget.files;
+                        if (!files || files.length === 0) return;
+                        const file = files[0];
+                        setFile(file);
+                        setPreview(URL.createObjectURL(file));
+                    }}
+                    multiple
+                />
+            </Button>
+            {preview && (
+                <div style={{ marginTop: '16px' }}>
+                    <img src={preview} alt="Preview" style={{ maxWidth: '60%', height: 'auto' }} />
+                </div>
+            )}
+        </div>
     );
 };

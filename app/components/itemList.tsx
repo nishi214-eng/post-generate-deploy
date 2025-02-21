@@ -17,10 +17,10 @@ export const ItemList = () => {
         setLoading(true);
         try {
             const q = query(
-                collection(db, 'items'),
-                orderBy('date'), // 追加された日時順でソート
-                limit(8)
-            ); // 最初の8件を取得
+                collection(db, "items"),
+                orderBy("date", "desc"), // 降順（新しいものが先）
+                limit(8) // 最新の8件を取得
+            );
             const querySnapshot = await getDocs(q);
 
             const newItems: savedItemData[] = [];
@@ -42,26 +42,26 @@ export const ItemList = () => {
     // 次の8件を取得する関数
     const fetchNextItems = async () => {
         if (!lastVisible || !hasNextPage) return; // 最後のドキュメントがなければ次を取得しない
-
+    
         setLoadingNext(true);
         try {
             const q = query(
-                collection(db, 'items'),
-                orderBy('date'), // 追加された日時順でソート
-                startAfter(lastVisible), // 最後のドキュメントから始める
+                collection(db, "items"),
+                orderBy("date", "desc"),
+                startAfter(lastVisible), // ここが重要！前回の最後のドキュメントの次から取得する
                 limit(8)
             );
-
+    
             const querySnapshot = await getDocs(q);
             const newItems: savedItemData[] = [];
             querySnapshot.forEach((doc) => {
                 const data = doc.data() as savedItemData;
                 newItems.push(data);
             });
-
-            setItems((prevItems) => [...prevItems, ...newItems]); // 新しいアイテムを追加
+    
+            setItems((prevItems) => [...prevItems, ...newItems]); // 既存データに追加
             setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]); // 最後のドキュメントを更新
-
+    
             // 次のページがあるかを判定
             setHasNextPage(querySnapshot.docs.length === 8);
         } catch (error) {
@@ -70,6 +70,7 @@ export const ItemList = () => {
             setLoadingNext(false);
         }
     };
+    
 
     useEffect(() => {
         fetchItems(); // 初回ロードで最初の8件を取得

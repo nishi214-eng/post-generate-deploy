@@ -2,9 +2,10 @@ import React, { useState,useEffect } from 'react';
 import { Button, Tabs, Tab, Box, CardContent, Typography, TextField } from '@mui/material';
 import "../style/post/post.css";
 
-export type postToTwetter = {
+export type postToTwitter = {
     jpTexts: string[];
     enTexts: string[];
+    imageUrls: string[]; // 画像URLのプロパティを追加
 };
 
 interface TabPanelProps {
@@ -36,7 +37,7 @@ function a11yProps(index: number) {
     };
 }
 
-export const PostToTweet: React.FC<postToTwetter> = ({ jpTexts, enTexts }) => {
+export const PostToTweet: React.FC<postToTwitter> = ({ jpTexts, enTexts, imageUrls }) => {
     const [selectedPost, setSelectedPost] = useState<string>('');
     const [editedText, setEditedText] = useState<string>('');
     const [value, setValue] = useState<number>(0);
@@ -123,12 +124,25 @@ export const PostToTweet: React.FC<postToTwetter> = ({ jpTexts, enTexts }) => {
                                             ) : (
                                                 result
                                             )}
-                                        </Typography>
+                                        </Typography>                     
                                     </CardContent>
                                 </label>
                             </li>
                         ))}
                     </ul>
+                    {imageUrls && imageUrls[0] !== 'undefined' && (
+                         <div style={{ marginTop: '20px' }}>
+                            <div className="section-explanation" >
+                                <p>画像つきの投稿をする場合は<br/>
+                                1. 下記の画像を右クリックしてコピーしてください<br/>
+                                2.「ポスト」のボタンを押したあとに遷移する、X（旧twitter）の画面で右クリックして貼り付けてください
+                                </p>
+                            </div>
+                            
+                            <img src={`https://firebasestorage.googleapis.com/v0/b/${process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID}.appspot.com/o/${encodeURIComponent(imageUrls[0])}?alt=media`}/>
+                        </div>
+                        )
+                    }
                     <Button
                         variant="contained"
                         color="primary"
@@ -205,6 +219,15 @@ export const PostToTweet: React.FC<postToTwetter> = ({ jpTexts, enTexts }) => {
                             </li>
                         ))}
                     </ul>
+                    {imageUrls[0] && (
+                        <div>
+                            <div className="section-explanation">
+                                <p>画像つきの投稿をする場合は、下記の画像をコピーし、「ポスト」のボタンを押したあとに遷移する、X（旧twitter）の画面で貼り付けてください</p>
+                            </div>
+                            <img src={`https://firebasestorage.googleapis.com/v0/b/${process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID}.appspot.com/o/${encodeURIComponent(imageUrls[0])}?alt=media`}/>
+                        </div>
+                        )
+                    }
                     <Button
                         variant="contained"
                         color="primary"

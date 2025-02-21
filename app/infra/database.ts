@@ -4,7 +4,6 @@ import { setDoc } from "firebase/firestore";
 import { fileUploadToStorage } from "../features/fileUploadToStorage";
 import { generateText } from "../features/generateText";
 import { createEmbedding } from "@/features/createEmbedding";
-import { getLlmLingua } from "@/features/llmLingua";
 
 export const uploadItemDateToFirestore = async (
     itemName:string,
@@ -38,28 +37,22 @@ export const uploadItemDateToFirestore = async (
             let userPrompt =`入力として与える解説文を英語に翻訳してください\n## 出力形式\n英語分のみを出力してください。\n##入力\n${explanation}`
             const enExplanation = await generateText(systemPrompt, userPrompt)||"";
             // 英語の解説文をllmLinguaで圧縮
-            const compressedPrompt = await getLlmLingua(enExplanation);
+            // const compressedPrompt = await getLlmLingua(enExplanation);
             // 解説文を意味ベクトルに変換
-            const vectorEmbedding = await createEmbedding(compressedPrompt);
-            // storageに画像を送信
-            const storagePath = await fileUploadToStorage(file,fileName);
-            try{
-                await setDoc(itemDataRef, {
-                    itemName,
-                    era,
-                    author,
-                    explanation,
-                    enExplanation,
-                    compressedPrompt,
-                    storagePath,
-                    vectorEmbedding,
-                    date
-                });
-            }catch(error){
-                throw new Error('firestoreへのデータ送信に失敗');
-            }
-        }catch (error){
-            throw new Error('storageへのアップロードに失敗');
+            const vectorEmbedding = await createEmbedding(enExplanation);     
+            const storagePath = await fileUploadToStorage(file,fileName);       
+            await setDoc(itemDataRef, {
+                itemName,
+                era,
+                author,
+                explanation,
+                enExplanation,
+                storagePath,
+                vectorEmbedding,
+                date                
+            });
+        }catch(error){
+            throw new Error('firestoreへのデータ送信に失敗');
         }
     }else{
         try{
